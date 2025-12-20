@@ -154,7 +154,7 @@ find_file:
 
     pushw %si
     movw $filename, %di
-    movw $11, %bx
+    movw $11, %cx
     repe cmpsb
     popw %si
     je .found
