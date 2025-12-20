@@ -16,12 +16,12 @@ all: $(OS_IMG)
 # Bootloader
 $(BOOT_BIN): $(BOOT_SRC)
 	$(AS) $(BOOT_SRC) -o bootloader/boot.o
-	$(LD) -Ttext 0x7C00 --oformat elf32-i386 bootloader/boot.o -o bootloader/boot.bin
+	$(LD) -Ttext 0x7C00 --oformat binary bootloader/boot.o -o bootloader/boot.bin
 
 # Kernel
 $(KERNEL_BIN): $(KERNEL_SRC)
 	$(AS) $(KERNEL_SRC) -o kernel/kernel.o
-	$(LD) -Ttext 0x8000 kernel/kernel.o -o $(KERNEL_BIN)
+	$(LD) -Ttext 0x8000 --oformat binary kernel/kernel.o -o $(KERNEL_BIN)
 
 # OS image
 $(OS_IMG): $(BOOT_BIN) $(KERNEL_BIN)
