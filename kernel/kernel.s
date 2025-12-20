@@ -82,7 +82,6 @@ disk_read:
 
     movb $1, %al      # read 1 sector
     movb $0x02, %ah   # BIOS read sectors
-    movb boot_drive, %dl
     int $0x13
     jc disk_fail
 
