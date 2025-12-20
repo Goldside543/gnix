@@ -97,7 +97,10 @@ load_fat:
     movw $FAT_START, %ax
     movw $(FAT_SECTORS*2), %cx
     movw $FAT_BUF, %bx
-    movw $0x0000, %es
+    pushw %ax
+    xorw %ax, %ax
+    movw %ax, %es
+    popw %ax
     call disk_read
     ret
 
@@ -108,7 +111,10 @@ load_root:
     movw $ROOT_START, %ax
     movw $ROOT_SECTORS, %cx
     movw $ROOT_BUF, %bx
-    movw $0x0000, %es
+    pushw %ax
+    xorw %ax, %ax
+    movw %ax, %es
+    popw %ax
     call disk_read
     ret
 
@@ -142,7 +148,7 @@ fat_next:
 find_file:
     movw $ROOT_BUF, %si
     movw $224, %cx
-.next:
+.next_file:
     cmpb $0, (%si)
     je .fail
 
@@ -154,7 +160,7 @@ find_file:
     je .found
 
     addw $32, %si
-    loop .next
+    loop .next_file
 
 .fail:
     stc
@@ -171,7 +177,8 @@ find_file:
 # ----------------------------
 load_com:
     movw $0x0100, %bx
-    movw $PROG_SEG, %es
+    movw $PROG_SEG, %ax
+    movw %ax, %es
 
 .next_cluster:
     cmpw $0x0FF8, %ax
