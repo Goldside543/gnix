@@ -38,7 +38,7 @@ _start:
     call load_fat
     call load_root
     call find_file
-    jnc .found
+    jc halt
 
     call load_com
     call run_com
@@ -57,31 +57,24 @@ halt:
 # ----------------------------
 disk_read:
     pusha
-
 .next:
-    pushw %ax         # save LBA
+    pushw %ax
 
-    movw %ax, %bx     # BX = current LBA
+    xorw %dx, %dx
+    movw $18, %cx
+    divw %cx
+    incb %dl
+    movb %dl, %cl
 
-    xorw %dx, %dx     # clear DX
-
-    movw %bx, %ax
-    movw $18, %cx     # sectors per track
-    divw %cx          # AX / 18; AX = quotient, DX = remainder
-    movb %dl, %cl     # CL = remainder = sector index (0-based)
-    incb %cl          # BIOS sectors start at 1
-
-    movb %al, %dh     # DH = temp for head/cylinder calculation
-
-    movw %ax, %ax     # AX = quotient
     xorw %dx, %dx
     movw $2, %cx
-    divw %cx          # AX / 2; AX = cylinder, DX = head
-    movb %dl, %dh     # DH = head
-    movb %al, %ch     # CH = cylinder
+    divw %cx
 
-    movb $1, %al      # read 1 sector
-    movb $0x02, %ah   # BIOS read sectors
+    movb %dl, %dh
+    movb %al, %ch
+
+    movb $0x02, %ah
+    movb $1, %al
     int $0x13
     jc disk_fail
 
