@@ -58,34 +58,38 @@ halt:
 disk_read:
     pusha
 
-    # DS:SI = pointer to Disk Address Packet
-    # We'll build it on the stack for simplicity
-    subw $16, %sp             # allocate 16 bytes for DAP
-    movw %sp, %si             # SI points to DAP
+.next:
+    pushw %ax              # save LBA
 
-    # Fill in DAP
-    movb $0x10, 0(%si)        # size of DAP = 16 bytes
-    movb $0x00, 1(%si)        # reserved
-    movw %cx, 2(%si)           # number of sectors to read (adjust as needed)
-    movw %bx, 4(%si)          # buffer offset (BX)
-    movw %es, 6(%si)          # buffer segment (ES)
-    movw %ax, 8(%si)          # low 16 bits
-    movw $0, 10(%si)          # high 16 bits (since LBA < 65536 for floppies)
-    movw $0, 12(%si)          # upper 16 bits of 32-bit field (or zero)
-    movw $0, 14(%si)          # upper 16 bits of 32-bit field (or zero)
+    # --- LBA → CHS ---
+    xorw %dx, %dx
+    movw %ax, %bx          # BX = LBA
 
-    movb $0x42, %ah           # Extended Read
+    movw $18, %cx
+    divw %cx               # AX = LBA / 18, DX = sector-1
+    movb %dl, %cl
+    incb %cl               # sector = (LBA % 18) + 1
+
+    xorw %dx, %dx
+    movw $2, %cx
+    divw %cx               # AX = cylinder, DX = head
+
+    movb %dl, %dh          # head
+    movb %al, %ch          # cylinder (low 8 bits)
+
+    # --- BIOS read ---
+    movb $0x02, %ah
+    movb $1, %al
     int $0x13
     jc disk_fail
 
-    addw $16, %sp             # free DAP
+    popw %ax               # restore LBA
+    incw %ax               # next LBA
+    addw $512, %bx         # advance buffer
+    loop .next
 
     popa
     ret
-
-disk_fail:
-    cli
-    hlt
 
 # ----------------------------
 # Load FAT tables
