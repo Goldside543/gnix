@@ -4,7 +4,7 @@
 # ----------------------------
 # FAT12 constants (1.44MB)
 # ----------------------------
-.set FAT_START,    1
+.set FAT_START,    5
 .set FAT_SECTORS,  9
 .set ROOT_START,   FAT_START + FAT_SECTORS*2
 .set ROOT_SECTORS, 14
