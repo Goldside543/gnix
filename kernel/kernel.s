@@ -153,7 +153,8 @@ find_file:
     je .fail
 
     pushw %si
-    movw $filename, %di
+    movw %si, %di
+    movw $filename, %si
     movw $11, %cx
     repe cmpsb
     popw %si
