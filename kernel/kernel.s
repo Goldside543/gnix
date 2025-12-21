@@ -217,4 +217,4 @@ message:
     .asciz "Microspace booted. Loading HELLO.COM...\r\n"
 
 filename:
-    .ascii "HELLO   COM"
+    .ascii "HELLO.COM"
