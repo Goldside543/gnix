@@ -81,8 +81,7 @@ disk_read:
     movb $0x02, %ah
     movb $1, %al
     int $0x13
-    jc disk_fail
-
+    
     popw %ax               # restore LBA
     incw %ax               # next LBA
     addw $512, %bx         # advance buffer
