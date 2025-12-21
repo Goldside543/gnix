@@ -66,7 +66,7 @@ disk_read:
     # Fill in DAP
     movb $0x10, 0(%si)        # size of DAP = 16 bytes
     movb $0x00, 1(%si)        # reserved
-    movw $1, 2(%si)           # number of sectors to read (adjust as needed)
+    movw %cx, 2(%si)           # number of sectors to read (adjust as needed)
     movw %bx, 4(%si)          # buffer offset (BX)
     movw %es, 6(%si)          # buffer segment (ES)
     movw %ax, 8(%si)          # low 16 bits
@@ -78,8 +78,6 @@ disk_read:
     int $0x13
     jc disk_fail
 
-    addw $512, %bx            # move buffer pointer
-    addw $1, %ax              # increment LBA
     addw $16, %sp             # free DAP
 
     popa
