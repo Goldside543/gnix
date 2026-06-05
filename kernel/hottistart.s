@@ -9,6 +9,7 @@ _start:
     sti
 
     movw $message, %si
+    
 .print:
     lodsb
     testb %al, %al
@@ -17,9 +18,26 @@ _start:
     int $0x10
     jmp .print
 
-.after_print:
-    hlt
-    jmp .after_print
+.after_print
+    movw $message2, %si
+    
+.print2
+    lodsb
+    testb %al, %al
+    jz .after_print2
+    movb $0x0E, %ah
+    int $0x10
+    jmp .print2
+
+.after_print2
+    movb $0x00, %ah
+    int $0x16
+    movw $0x1000, %ax
+    movw %ax, %es
+    movw $0x0000, %bx
+    movb $0x00, %ch
+    movb $0x01, %cl
+    movb $0x00, %dh
 
 # ----------------------------
 # BIOS CHS read (1 sector)
@@ -45,4 +63,6 @@ disk_read_chs:
     ret
 
 message:
-    .asciz "Welcome to Hotti, the only (as far as I know) OS where you run apps by hot swapping disks!\r\n"
+    .asciz "Welcome to Hotti, an OS where you run apps by hot swapping disks!\r\n"
+message2:
+    .asciz "Please insert an application disk and press any key.\r\n"
