@@ -38,6 +38,14 @@ _start:
     movb $0x00, %ch
     movb $0x01, %cl
     movb $0x00, %dh
+    call disk_read_chs
+    jc .read_failed
+    ljmp $0x1000, $0x0000
+
+.read_failed:
+    cli
+    hlt
+    jmp .read_failed
 
 # ----------------------------
 # BIOS CHS read (1 sector)
