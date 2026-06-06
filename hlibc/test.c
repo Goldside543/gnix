@@ -13,4 +13,9 @@ int main() {
     putc('C');
     putc('!');
     putc('\n');
+
+    #asm
+        cli
+        hlt
+    #endasm
 }
