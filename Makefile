@@ -1,22 +1,19 @@
 AS = x86_64-linux-gnu-as --32
 LD = x86_64-linux-gnu-ld -m elf_i386
-CC = bcc
-CFLAGS = -ansi -Ms -d -x
+CC = x86_64-linux-gnu-gcc
+CFLAGS = --std=gnu17 -g -m32 -Werror -ffreestanding -fno-stack-protector
 
 # Files
 BOOT_SRC = bootloader/boot.s
 BOOT_BIN = bootloader/boot.bin
 
 KERNEL_SRC = kernel/hottistart.s
-KERNEL_BIN = kernel/hotti.bin
+KERNEL_BIN = kernel/gnixkrnl.bin
 
 OS_IMG = os.img
 
-HLIBC_SRC = hlibc/hlibc.c
-HLIBC_OBJ = hlibc/hlibc.o
-
 # Targets
-all: $(OS_IMG) $(HLIBC_OBJ)
+all: $(OS_IMG)
 
 # Bootloader
 $(BOOT_BIN): $(BOOT_SRC)
@@ -34,15 +31,10 @@ $(OS_IMG): $(BOOT_BIN) $(KERNEL_BIN)
 	dd if=$(BOOT_BIN) of=$(OS_IMG) bs=512 count=1 conv=notrunc
 	dd if=$(KERNEL_BIN) of=$(OS_IMG) bs=512 seek=1 conv=notrunc
 
-# hlibc
-$(HLIBC_OBJ): $(HLIBC_SRC)
-	$(CC) $(CFLAGS) $(HLIBC_SRC) -c $(HLIBC_OBJ)
-
 # Clean
 clean:
 	rm -f bootloader/*.o bootloader/*.elf bootloader/*.bin \
 		kernel/*.o kernel/*.elf kernel/*.bin \
-		hlibc/*.o  hlibc/*.elf  hlibc/*.bin  \
 		$(OS_IMG)
 
 .PHONY: all clean
