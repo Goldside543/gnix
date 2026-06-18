@@ -1,7 +1,7 @@
 AS = x86_64-linux-gnu-as --32
 LD = x86_64-linux-gnu-ld -m elf_i386
 CC = x86_64-linux-gnu-gcc
-CFLAGS = --std=gnu17 -g -m32 -Werror -ffreestanding -nostdlib -nostdinc -fno-stack-protector
+CFLAGS = --std=gnu17 -g -m32 -Werror -ffreestanding -nostdlib -nostdinc -fno-stack-protector -fno-pic -fno-pie
 
 # Files
 BOOT_SRC = bootloader/boot.s
