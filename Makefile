@@ -7,7 +7,7 @@ CFLAGS = --std=gnu17 -g -m32 -Werror -ffreestanding -fno-stack-protector
 BOOT_SRC = bootloader/boot.s
 BOOT_BIN = bootloader/boot.bin
 
-KERNEL_SRC = kernel/hottistart.s
+KERNEL_SRC = kernel/gnixstart.s
 KERNEL_BIN = kernel/gnixkrnl.bin
 
 OS_IMG = os.img
