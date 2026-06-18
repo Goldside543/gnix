@@ -7,7 +7,8 @@ CFLAGS = --std=gnu17 -g -m32 -Werror -ffreestanding -fno-stack-protector
 BOOT_SRC = bootloader/boot.s
 BOOT_BIN = bootloader/boot.bin
 
-KERNEL_SRC = kernel/gnixstart.s
+KERNEL_ASM_SRC = kernel/gnixstart.s
+KERNEL_C_SRC = kernel/pentry.c
 KERNEL_BIN = kernel/gnixkrnl.bin
 
 OS_IMG = os.img
@@ -21,9 +22,10 @@ $(BOOT_BIN): $(BOOT_SRC)
 	$(LD) -Ttext 0x7C00 --oformat binary bootloader/boot.o -o bootloader/boot.bin
 
 # Kernel
-$(KERNEL_BIN): $(KERNEL_SRC)
-	$(AS) $(KERNEL_SRC) -o kernel/hottistart.o
-	$(LD) -Ttext 0x8000 --oformat binary kernel/hottistart.o -o $(KERNEL_BIN)
+$(KERNEL_BIN): $(KERNEL_ASM_SRC) $(KERNEL_C_SRC)
+	$(AS) $(KERNEL_ASM_SRC) -o kernel/hottistart.o
+    $(CC) $(CFLAGS) $(KERNEL_C_SRC) -o kernel/pkernel.o
+	$(LD) -Ttext 0x8000 --oformat binary kernel/hottistart.o kernel/pkernel.o -o $(KERNEL_BIN)
 
 # OS image
 $(OS_IMG): $(BOOT_BIN) $(KERNEL_BIN)
