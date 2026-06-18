@@ -1,4 +1,4 @@
-name: Build and Upload Hotti
+name: Build and Upload Gnix
 
 on:
   workflow_dispatch:
